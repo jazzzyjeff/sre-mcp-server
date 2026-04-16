@@ -1,7 +1,12 @@
+import logging
 from azure.devops.v7_1.work_item_tracking.models import Wiql
 from azure_devops.client import get_client
 from azure_devops.models import Project, Build, Pipeline, WorkItem
 from typing import Optional
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
 
 def register_tools(mcp):
     @mcp.tool()
@@ -80,3 +85,57 @@ def register_tools(mcp):
             }
             for b in builds
         ]
+
+    @mcp.tool()
+    def get_build(project: str, build_id: str):
+        build_client = get_client().clients.get_build_client()
+        b = build_client.get_build(project, build_id)
+
+        return {
+            "id": b.id,
+            "pipeline": b.definition.name,
+            "status": b.status,
+            "result": b.result,
+        }
+
+    @mcp.tool()
+    def get_build_logs(project: str, build_id: int) -> str:
+        """Get logs for a build."""
+        build_client = get_client().clients.get_build_client()
+        logs = build_client.get_build_logs(project, build_id)
+
+        output = []
+        for log in logs:
+            stream = build_client.get_build_log(project, build_id, log.id)
+            content = b"".join(stream).decode("utf-8", errors="ignore")
+            output.append(f"\n--- LOG {log.id} ---\n{content}")
+
+        return "\n".join(output)
+
+    @mcp.tool()
+    def get_failed_steps(project: str, build_id: int):
+        """Get failed steps from a build."""
+        build_client = get_client().clients.get_build_client()
+        timeline = build_client.get_build_timeline(project, build_id)
+
+        failed = []
+        for record in timeline.records:
+            if record.result == "failed":
+                failed.append(
+                    {
+                        "id": record.id,
+                        "name": record.name,
+                        "type": record.type,
+                        "log_id": record.log.id if record.log else None,
+                    }
+                )
+
+        return failed
+
+    @mcp.tool()
+    def get_log_by_id(project: str, build_id: int, log_id: int) -> str:
+        """Get specific log by ID."""
+        build_client = get_client().clients.get_build_client()
+        stream = build_client.get_build_log(project, build_id, log_id)
+        content = b"".join(stream).decode("utf-8", errors="ignore")
+        return content[:5000]
