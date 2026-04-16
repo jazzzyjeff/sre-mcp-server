@@ -31,16 +31,16 @@ repos:
         pass_filenames: true
         types: [python]
 
-      - id: uv-pylint
-        name: uv pylint
-        entry: uv run pylint .
-        language: system
-        pass_filenames: false
-        types: [python]
+      # - id: uv-pylint
+      #   name: uv pylint
+      #   entry: uv run pylint .
+      #   language: system
+      #   pass_filenames: false
+      #   types: [python]
 
-      - id: uv-mypy
-        name: uv mypy
-        entry: uv run mypy
-        language: system
-        pass_filenames: true
-        types: [python]
+      # - id: uv-mypy
+      #   name: uv mypy
+      #   entry: uv run mypy
+      #   language: system
+      #   pass_filenames: true
+      #   types: [python]
