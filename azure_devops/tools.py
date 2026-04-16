@@ -133,6 +133,61 @@ def get_log_by_id(project: str, build_id: int, log_id: int) -> str:
     return content[:5000]
 
 
+def get_repositories(project: str):
+    git_client = get_client().clients.get_git_client()
+    repos = git_client.get_repositories(project)
+
+    return [
+        {
+            "id": r.id,
+            "name": r.name,
+            "default_branch": r.default_branch,
+        }
+        for r in repos
+    ]
+
+
+def get_environments(project: str):
+    task_client = get_client().clients.get_task_agent_client()
+    envs = task_client.get_environments(project=project)
+
+    return [
+        {
+            "id": e.id,
+            "name": e.name,
+        }
+        for e in envs
+    ]
+
+
+def get_deployments(project: str, environment_id: int) -> list[dict]:
+    task_client = get_client().clients.get_task_agent_client()
+    records = task_client.get_environment_deployment_execution_records(
+        project=project,
+        environment_id=environment_id,
+        # top=20
+    )
+
+    seen = set()
+    deployments = []
+
+    for r in records:
+        if r.owner.id in seen:
+            continue
+        seen.add(r.owner.id)
+        deployments.append(
+            {
+                "pipeline": r.definition.name,
+                "run_id": r.owner.id,
+                "run_name": r.owner.name,
+                "result": r.result,
+            }
+        )
+
+    deployments.sort(key=lambda x: x["run_id"], reverse=True)
+    return deployments
+
+
 tools: List[Callable] = [
     get_projects,
     get_work_items,
@@ -142,6 +197,9 @@ tools: List[Callable] = [
     get_build_logs,
     get_failed_steps,
     get_log_by_id,
+    get_repositories,
+    get_environments,
+    get_deployments,
 ]
 
 
