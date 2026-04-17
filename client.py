@@ -9,30 +9,64 @@ async def main():
         # tools = await client.list_tools()
         # print("TOOLS:", tools)
 
-        failed_steps = await client.call_tool(
-            "get_failed_steps",
-            {"project": settings.azure_devops_project, "build_id": 504},
+        get_repositories = await client.call_tool(
+            "get_repositories",
+            {"project": settings.azure_devops_project},
+        )
+        print(get_repositories)
+
+        get_environments = await client.call_tool(
+            "get_environments",
+            {"project": settings.azure_devops_project},
         )
 
-        raw_text = failed_steps.content[0].text
-        failed_steps = json.loads(raw_text)
+        for env in json.loads(get_environments.content[0].text):
+            deployments = await client.call_tool(
+                "get_deployments",
+                {"project": settings.azure_devops_project, "environment_id": env["id"]},
+            )
+            print(deployments)
 
-        for step in failed_steps:
-            log_id = step.get("log_id")
-            if not log_id:
-                continue
+        get_pipelines = await client.call_tool(
+            "get_pipelines",
+            {"project": settings.azure_devops_project},
+        )
 
-            logs = await client.call_tool(
-                "get_log_by_id",
+        for service in json.loads(get_pipelines.content[0].text):
+            get_recent_builds = await client.call_tool(
+                "get_recent_builds",
                 {
                     "project": settings.azure_devops_project,
-                    "build_id": 504,
-                    "log_id": log_id,
+                    "pipeline_id": service["id"],
+                    "limit": 1,
                 },
             )
 
-            logs = logs.content[0].text
-            print(logs)
+            for build in json.loads(get_recent_builds.content[0].text):
+                failed_steps = await client.call_tool(
+                    "get_failed_steps",
+                    {"project": settings.azure_devops_project, "build_id": build["id"]},
+                )
+
+                if failed_steps.content:
+                    raw_text = failed_steps.content[0].text
+                    failed_steps = json.loads(raw_text)
+                    for step in failed_steps:
+                        log_id = step.get("log_id")
+                        if not log_id:
+                            continue
+
+                        logs = await client.call_tool(
+                            "get_log_by_id",
+                            {
+                                "project": settings.azure_devops_project,
+                                "build_id": build["id"],
+                                "log_id": log_id,
+                            },
+                        )
+
+                        logs = logs.content[0].text
+                        print(logs)
 
 
 if __name__ == "__main__":
