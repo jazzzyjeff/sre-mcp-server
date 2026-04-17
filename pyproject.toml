@@ -1,0 +1,19 @@
+[project]
+name = "sre-mcp-server"
+version = "0.1.0"
+description = "MCP server for SRE tooling to enable AI-assisted DevOps workflows."
+readme = "README.md"
+requires-python = ">=3.14"
+dependencies = [
+    "azure-devops>=7.1.0b4",
+    "fastmcp>=3.2.4",
+    "msrest>=0.7.1",
+    "pydantic-settings>=2.13.1",
+]
+
+[dependency-groups]
+dev = [
+    "black>=26.3.1",
+    "mypy>=1.20.1",
+    "pylint>=4.0.5",
+]
