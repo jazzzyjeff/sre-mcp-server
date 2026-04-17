@@ -23,7 +23,11 @@ async def main():
         for env in json.loads(get_environments.content[0].text):
             deployments = await client.call_tool(
                 "get_deployments",
-                {"project": settings.azure_devops_project, "environment_id": env["id"]},
+                {
+                    "project": settings.azure_devops_project,
+                    "environment_id": env["id"],
+                    "limit": 1,
+                },
             )
             print(deployments)
 

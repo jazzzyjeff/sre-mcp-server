@@ -31,3 +31,28 @@ class Build(BaseModel):
     requested_by: str
     start_time: Optional[datetime] = None
     finish_time: Optional[datetime] = None
+
+
+class FailedStep(BaseModel):
+    id: str
+    name: str
+    type: str
+    log_id: Optional[int] = None
+
+
+class Repository(BaseModel):
+    id: str
+    name: str
+    default_branch: Optional[str] = None
+
+
+class Environment(BaseModel):
+    id: int
+    name: str
+
+
+class Deployment(BaseModel):
+    pipeline: str
+    run_id: int
+    run_name: str
+    result: Optional[str]
