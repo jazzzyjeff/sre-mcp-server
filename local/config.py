@@ -2,9 +2,7 @@ from pydantic_settings import BaseSettings
 
 
 class Settings(BaseSettings):
-    azure_devops_org_url: str
-    azure_devops_pat: str
-    azure_devops_project: str = ""
+    anthropic_api_key: str
 
     class Config:
         env_file = ".env"
