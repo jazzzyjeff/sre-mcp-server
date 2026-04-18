@@ -5,6 +5,7 @@ description = "MCP server for SRE tooling to enable AI-assisted DevOps workflows
 readme = "README.md"
 requires-python = ">=3.14"
 dependencies = [
+    "anthropic>=0.96.0",
     "azure-devops>=7.1.0b4",
     "fastmcp>=3.2.4",
     "kubernetes>=35.0.0",
