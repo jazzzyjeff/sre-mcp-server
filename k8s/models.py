@@ -1,8 +1,12 @@
-from pydantic import BaseModel
+"""Kubernetes Pydantic models."""
+
 from typing import Optional
+from pydantic import BaseModel
 
 
 class Pod(BaseModel):
+    """Represents a Kubernetes pod."""
+
     name: str
     namespace: str
     status: str
@@ -11,6 +15,8 @@ class Pod(BaseModel):
 
 
 class Deployment(BaseModel):
+    """Represents a Kubernetes deployment."""
+
     name: str
     namespace: str
     desired: int
@@ -20,6 +26,8 @@ class Deployment(BaseModel):
 
 
 class Event(BaseModel):
+    """Represents a Kubernetes event."""
+
     namespace: str
     name: str
     reason: str
