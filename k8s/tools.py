@@ -1,3 +1,5 @@
+"""Kubernetes MCP tool definitions."""
+
 from typing import List, Callable
 from k8s.kube_client import get_kube_client
 from k8s.models import Pod, Deployment, Event
@@ -81,5 +83,6 @@ tools: List[Callable] = [
 
 
 def register_tools(mcp):
+    """Register all k8s tools with the MCP server."""
     for tool in tools:
         mcp.tool()(tool)

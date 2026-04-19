@@ -1,7 +1,9 @@
+"""Azure DevOps client singleton."""
+
+from functools import lru_cache
 from azure.devops.connection import Connection
 from msrest.authentication import BasicAuthentication
 from azure_devops.config import settings
-from functools import lru_cache
 
 
 @lru_cache(maxsize=1)

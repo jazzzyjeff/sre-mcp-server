@@ -1,9 +1,13 @@
-from kubernetes import client, config
-from functools import lru_cache
+"""Kubernetes client singleton."""
+
 import os
+from functools import lru_cache
+from kubernetes import client, config
 
 
 class KubeClient:
+    """Wrapper around the Kubernetes API clients."""
+
     def __init__(self):
         if os.getenv("KUBERNETES_SERVICE_HOST"):
             config.load_incluster_config()

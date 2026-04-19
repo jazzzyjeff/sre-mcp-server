@@ -1,3 +1,6 @@
+"""Azure DevOps MCP tool definitions."""
+
+from typing import Optional, List, Callable
 from azure.devops.v7_1.work_item_tracking.models import Wiql
 from azure_devops.client import get_client
 from azure_devops.models import (
@@ -10,7 +13,6 @@ from azure_devops.models import (
     Environment,
     Deployment,
 )
-from typing import Optional, List, Callable
 
 
 def get_projects() -> List[Project]:
@@ -90,6 +92,7 @@ def get_recent_builds(
 
 
 def get_build(project: str, build_id: str) -> Build:
+    """Gets a build for a project."""
     build_client = get_client().clients.get_build_client()
     b = build_client.get_build(project, build_id)
 
@@ -145,6 +148,7 @@ def get_log_by_id(project: str, build_id: int, log_id: int) -> str:
 
 
 def get_repositories(project: str) -> List[Repository]:
+    """Get all git repositories within a project."""
     git_client = get_client().clients.get_git_client()
     repos = git_client.get_repositories(project)
 
@@ -159,6 +163,7 @@ def get_repositories(project: str) -> List[Repository]:
 
 
 def get_environments(project: str) -> List[Environment]:
+    """Get all environments within a project."""
     task_client = get_client().clients.get_task_agent_client()
     envs = task_client.get_environments(project=project)
 
@@ -174,6 +179,7 @@ def get_environments(project: str) -> List[Environment]:
 def get_deployments(
     project: str, environment_id: int, limit: int = 20
 ) -> List[Deployment]:
+    """Get all deployments made within environment."""
     task_client = get_client().clients.get_task_agent_client()
     records = task_client.get_environment_deployment_execution_records(
         project=project, environment_id=environment_id, top=limit
@@ -214,5 +220,6 @@ tools: List[Callable] = [
 
 
 def register_tools(mcp):
+    """Register all k8s tools with the MCP server."""
     for tool in tools:
         mcp.tool()(tool)
