@@ -1,3 +1,5 @@
+# sre-mcp-server
+
 - [sre-mcp-server](#sre-mcp-server)
   - [What it does](#what-it-does)
   - [Project structure](#project-structure)
@@ -12,8 +14,6 @@
   - [Adding new tools](#adding-new-tools)
   - [Adding a new module (e.g. PagerDuty)](#adding-a-new-module-eg-pagerduty)
   - [Linting and type checking](#linting-and-type-checking)
-
-# sre-mcp-server
 
 An MCP (Model Context Protocol) server for SRE workflows, connecting Claude to Azure DevOps and Kubernetes so you can triage incidents, inspect pipelines, and query infrastructure through natural language.
 
@@ -40,7 +40,6 @@ Claude can call tools across your infrastructure directly from a conversation:
 - *"What pods are unhealthy in the prod namespace?"* → `get_unhealthy_pods`
 - *"Show me the last deployment to the prod environment"* → `get_environments` → `get_deployments`
 - *"Which pipelines failed today and why?"* → `get_recent_builds` → `get_failed_steps` → `get_log_by_id`
-
 
 ## Project structure
 
@@ -71,7 +70,6 @@ sre-mcp-server/
 - Azure DevOps organisation with a Personal Access Token
 - Kubernetes cluster with a valid kubeconfig (or in-cluster config)
 - Anthropic API key (for local Claude testing only)
-
 
 ## Setup
 
@@ -121,7 +119,6 @@ Add to your `claude_desktop_config.json`:
 ```
 
 Restart Claude desktop. You should see the tools available in the toolbar.
-
 
 ## Inspecting with the MCP inspector
 
@@ -194,7 +191,6 @@ class MyModel(BaseModel):
 ```
 
 **4. Test with the inspector or `local/mcp_client.py` before connecting to Claude.**
-
 
 ## Adding a new module (e.g. PagerDuty)
 
